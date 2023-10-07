@@ -1,0 +1,18 @@
+.custom-link{
+    height: var(--btn-height) ;
+    line-height:32px ;
+    padding: 0px var(--btn-padding) ;
+    font-size: 14px;
+    background: var(--btn-bg);
+    color:var(--btn-text-color) ;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    font-weight: var(--font-weight-normal);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+    .custom-link:hover,
+    .custom-link:focus{outline: none !important; background: var(--btn-bg-hvr) !important; color:var(--btn-text-color-hvr) !important}
+
+    .custom-link svg path{fill:var(--btn-icon-color); opacity: 1;}
