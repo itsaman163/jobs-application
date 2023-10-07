@@ -1,0 +1,33 @@
+.form-container .ant-input,
+.login-form .ant-input,
+.custom-input {
+    height: var(--input-height);
+    border: 1px solid var(--input-brdr-color);
+    border-radius: var(--input-radius);
+    font-weight: var(--primary-font-weight-regular) !important;
+    font-family: var(--primary-font-family-regular) !important;
+    font-size: var(--form-input-responsive) !important;
+    padding: 0px 10px !important
+}
+
+.form-container .ant-input:focus,
+.login-form .ant-input:focus,
+.custom-input:focus {
+    box-shadow: none;
+}
+
+.form-row .ant-form-item-label {
+    padding: 0px 0 10px !important;
+}
+
+.form-row .ant-col>label {
+    font-weight: var(--primary-font-weight-medium) !important;
+    font-family: var(--primary-font-family-medium) !important;
+    color: #4A494D;
+    font-size: var(--form-label-responsive);
+    line-height: normal;
+    padding: 0px;
+    margin: 0;
+    flex-direction: row-reverse;
+    grid-gap: 5px;
+}

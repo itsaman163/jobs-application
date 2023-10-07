@@ -1,0 +1,23 @@
+/* Style the header element */
+header {
+    background-color: #333; /* Set background color */
+    padding: 20px 0; /* Add padding to the top and bottom */
+  }
+  
+  /* Style the navigation links */
+  nav {
+    text-align: left; /* Center-align the links horizontally */
+  }
+  
+  nav a {
+    color: #fff; /* Set link color to white */
+    text-decoration: none; /* Remove underlines from links */
+    margin: 0 10px; /* Add spacing between links */
+    font-size: 16px; /* Set font size */
+  }
+  
+  /* Style the active link (e.g., when on the "Jobs" page) */
+  nav a[href="/jobs"] {
+    font-weight: bold; /* Make the active link bold */
+  }
+  
