@@ -35,11 +35,11 @@ const Jobs = () => {
       method: "POST",
       apiParams: {},
     };
-    const res = await apiRequest(`/jobs/${value}`, apiParams);
     setIsLoading(false);
-    if (res.setting.success == "1") {
-      setJobFormData(res.data.job);
-    }
+    // const res = await apiRequest(`/jobs/${value}`, apiParams);
+    // if (res.setting.success == "1") {
+    //   setJobFormData(res.data.job);
+    // }
     setOpen(true);
   };
   
