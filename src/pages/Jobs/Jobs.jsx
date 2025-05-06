@@ -1,20 +1,51 @@
-import { Button, Card, Modal } from "antd";
-import Cards from "../../components/Cards/Cards";
+import { Button, Card, Modal, Space, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../helper/general";
 import Loader from "../../components/Loader/Loader";
 import AddUpdateJob from "./AddUpdateJob";
+import TableData from "../../components/Tables/Table";
 
+
+const columns = [
+  {
+    title: 'Company',
+    dataIndex: 'company',
+    key: 'company',
+    render: (text) => <a>{text}</a>,
+  },
+  {
+    title: 'Position',
+    dataIndex: 'position',
+    key: 'position',
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+  },
+  {
+    title: 'Created By',
+    key: 'createdBy',
+    dataIndex: 'createdBy'
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        <a>Invite </a>
+        <a>Delete</a>
+      </Space>
+    ),
+  },
+];
 const Jobs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState([]);
   const [open, setOpen] = useState(false);
   const [jobFormData, setJobFormData] = useState({});
   const [mode, setMode] = useState("add");
-  const onCreate = (values) => {
-    console.log("Received values of form: ", values);
-    setOpen(false);
-  };
+
   const getProjectList = async () => {
     try {
       setIsLoading(false);
@@ -26,7 +57,7 @@ const Jobs = () => {
       if (res.setting.success == "1") {
         setProjectData(res.data.jobs);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getFormData = async (value) => {
     setMode("update");
@@ -35,14 +66,14 @@ const Jobs = () => {
       method: "POST",
       apiParams: {},
     };
+    const res = await apiRequest(`/jobs/${value}`, apiParams);
     setIsLoading(false);
-    // const res = await apiRequest(`/jobs/${value}`, apiParams);
-    // if (res.setting.success == "1") {
-    //   setJobFormData(res.data.job);
-    // }
+    if (res.setting.success == "1") {
+      setJobFormData(res.data.job);
+    }
     setOpen(true);
   };
-  
+
   useEffect(() => {
     getProjectList();
   }, []);
@@ -52,13 +83,14 @@ const Jobs = () => {
   return (
     <>
       {isLoading && <Loader />}
-      {projectData.map((data) => (
-        <Cards key={data._id} getFormData={getFormData} data={data} />
-      ))}
+      <Button type="primary" onClick={modelClickHandler} className="add-button">
+        Add New Job
+      </Button>
+      <Typography.Title level={3} className="table-heading">
+        All JOBS
+      </Typography.Title>
+        <TableData columns={columns} data={projectData}/>
       <div>
-        <Button type="primary" onClick={modelClickHandler}>
-          Add New Job
-        </Button>
         <Modal
           title="Create Job"
           centered

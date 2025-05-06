@@ -1,14 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./LayoutHeader.css";
 import Logout from "../pages/Guest/Logout";
+import { Header } from "antd/es/layout/layout";
+import { theme } from "antd";
 const LayoutHeader = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
   return (
-    <header>
-      <nav>
-        <Link to="/jobs">Jobs</Link>
-      </nav>
-      <Logout/>
-    </header>
+
+    <Header style={{ padding: 0, background: colorBgContainer }} >
+      <Logout />
+    </Header>
   );
 };
 export default LayoutHeader;

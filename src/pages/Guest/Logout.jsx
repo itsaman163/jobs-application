@@ -15,14 +15,13 @@ const Logout = () => {
   };
 
 return (
-  <Space direction="vertical">
+  <Space direction="vertical" className="logout-button">
     <Button
       type="primary"
       icon={<PoweroffOutlined />}
       loading={loadings[1]}
       onClick={() => logoutHandler()}
     >
-      Logout
     </Button>
   </Space>
 )
