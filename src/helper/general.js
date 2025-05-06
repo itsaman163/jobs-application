@@ -15,7 +15,7 @@ export const successMsg = (message) =>
 export const errorMsg = (message) =>
   toast.error(message, {
     autoClose: 3000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: false,
@@ -67,8 +67,8 @@ export const apiRequest = async (apiUrl, apiSetting = {}) => {
       const api_response = await axios.post(targetUrl, formData, axiosConfig);
 
       return api_response["data"];
-    } 
-    else if(method === "PATCH"){
+    }
+    else if (method === "PATCH") {
       let formData = new FormData();
       for (const [key, value] of Object.entries(apiParams)) {
         formData.append(key, value);
@@ -76,7 +76,7 @@ export const apiRequest = async (apiUrl, apiSetting = {}) => {
       const api_response = await axios.patch(targetUrl, axiosConfig);
 
       return api_response["data"];
-    }else {
+    } else {
       axiosConfig["params"] = apiParams;
       const api_response = await axios.get(targetUrl, axiosConfig);
 
@@ -86,4 +86,34 @@ export const apiRequest = async (apiUrl, apiSetting = {}) => {
     console.log(error);
     // return error?.response;
   }
-};
+}
+
+export const apiRequestV1 = async (apiUrl, apiParams) => {
+  try {
+    const targetUrl = API_END_POINT + apiUrl;
+    const method = apiParams.method;
+    const data = apiParams.apiParams;
+
+    const loginInfo = getSession();
+    console.log(loginInfo);
+    const authToken = loginInfo ? loginInfo : null;
+
+
+    const Authorization = "Bearer " + authToken.token;
+
+    let config = {
+      method: method,
+      maxBodyLength: Infinity,
+      url: targetUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': Authorization
+      },
+      data: JSON.stringify(data)
+    };
+    const result = await axios.request(config);
+    return result.data
+  } catch (err) {
+    return { setting: { success: false, massage: err.response.data.msg } }
+  }
+}
