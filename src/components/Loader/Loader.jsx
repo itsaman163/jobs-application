@@ -1,5 +1,5 @@
 import { Spin } from "antd";
-// import "./loader.css";
+import "./loader.css";
 
 const Loader = (props) => {
   const { size = "large", children = null, ...rest } = props; // default, small, large
