@@ -1,6 +1,6 @@
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MenuArr = [
@@ -13,27 +13,29 @@ const MenuArr = [
     {
         key: 2,
         icon: React.createElement(VideoCameraOutlined),
-        label: "In Active Jobs"
+        label: "Users",
+        path: "/user"
     },
     {
         key: 3,
         icon: React.createElement(UploadOutlined),
-        label: "About"
+        label: "About",
+        path: "/about"
     }
 ];
 
 
 const LeftMenu = () => {
     const navigate = useNavigate();
+    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['1']);
     const onClick = (e) => {
-        debugger;
         const selectedItem = MenuArr.find(item => item.key == e.key);
         if (selectedItem?.path) {
             navigate(selectedItem.path);
         }
     }
     return (
-        <Menu onClick={onClick} theme="dark" mode="inline" defaultSelectedKeys={['1']} items={MenuArr} />
+        <Menu onClick={onClick} theme="dark" mode="inline" defaultSelectedKeys={defaultSelectedKeys} items={MenuArr} />
     )
 }
 export default LeftMenu; 

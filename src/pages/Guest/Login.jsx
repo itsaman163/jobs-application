@@ -1,19 +1,19 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Form, Input, Typography } from "antd";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button, Card, Form, Input, Typography } from "antd";
 import { errorMsg, successMsg } from "../../helper/general";
 import { setSession } from "../../helper/auth";
 import Loader from "../../components/Loader/Loader";
-import CustomInput from "../../components/FormElements/Input/Input";
 import "./Login.css";
 import { LoginContext } from "../../App";
 import axios from "axios";
+import { API_END_POINT } from "../../config";
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text } = Typography;
 
 const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
   const { setIsLogin } = useContext(LoginContext);
 
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const Login = () => {
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'http://localhost:5000/api/v1/auth/login',
+        url: API_END_POINT + "/auth/login",
         headers: {
           'Content-Type': 'application/json'
         },
@@ -52,79 +52,71 @@ const Login = () => {
       };
       const result = await axios.request(config);
       return result.data
-
     } catch (err) {
       return err.response.data.msg;
     }
   };
-
-
-
   return (
-    <>
+    <Card className="login-form">
       {isLoading && <Loader />}
-      {!isLoading && (
-        <div className="login-container">
-
-          <div className="slogun-text">
-            <Title level={2}>
-              <Text level={2}>Sign In</Text>
-            </Title>
-          </div>
-          <Form
-            className="login-form"
-            name="normal_login"
-            layout="vertical"
-            onFinish={onFinish}
-            form={form}
+      <Title level={2}>
+        <Text level={2}>Sign In</Text>
+      </Title>
+      <Form
+        className="form"
+        name="normal_login"
+        layout="vertical"
+        onFinish={onFinish}
+        form={form}
+        autoComplete="off"
+        size="default"
+      >
+        <Form.Item
+          label="Email"
+          name="username"
+          className="form-row"
+          rules={[
+            {
+              type: "email",
+              message: "Please enter a valid email",
+            },
+            {
+              required: true,
+              message: "Please enter your email",
+            },
+          ]}
+        >
+          <Input
+            placeholder="Enter your email address"
+          />
+        </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          className="form-row password-field"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Password!",
+            },
+          ]}
+        >
+          <Input.Password placeholder="Password" />
+        </Form.Item>
+        <Form.Item>
+          <Button
+            block
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
           >
-            <Form.Item
-              label="Email"
-              name="username"
-              className="form-row username-field"
-              rules={[
-                {
-                  type: "email",
-                  message: "Please enter a valid email",
-                },
-                {
-                  required: true,
-                  message: "Please enter your email",
-                },
-              ]}
-            >
-              <CustomInput
-                placeholder="Enter your email address"
-                type="text"
-                name="Username"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Password"
-              name="password"
-              className="form-row password-field"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your Password!",
-                },
-              ]}
-            >
-              <Input.Password type="password" placeholder="Password" />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button"
-              >
-                Sign In
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      )}
-    </>
+            Sign In
+          </Button>
+        </Form.Item>
+        or <NavLink to="/registration" end>Sign up Now</NavLink>
+
+      </Form>
+    </Card>
   );
 };
 export default Login;

@@ -95,7 +95,6 @@ export const apiRequestV1 = async (apiUrl, apiParams) => {
     const data = apiParams.apiParams;
 
     const loginInfo = getSession();
-    console.log(loginInfo);
     const authToken = loginInfo ? loginInfo : null;
 
 
@@ -114,6 +113,7 @@ export const apiRequestV1 = async (apiUrl, apiParams) => {
     const result = await axios.request(config);
     return result.data
   } catch (err) {
+    console.log(err);
     return { setting: { success: false, massage: err.response.data.msg } }
   }
 }
