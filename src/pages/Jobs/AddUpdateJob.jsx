@@ -1,11 +1,9 @@
-import { Button, Form, Input, Modal, Radio, Select } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import { apiRequestV1, errorMsg, successMsg } from "../../helper/general";
-import { useNavigate } from "react-router-dom";
-// import { useForm } from "antd/es/form/Form";
 
 const AddUpdateJob = (props) => {
   const { form } = Form.useForm();
-  const navigate = useNavigate();
+
 
   const onFinish = async (value) => {
     const apiParams = {
@@ -17,16 +15,16 @@ const AddUpdateJob = (props) => {
 
       },
     };
-    const apiRes = await apiRequestV1('/jobs', apiParams)
-    debugger;
+    const apiRes = await apiRequestV1('/jobs', apiParams);
     if (apiRes?.setting?.success == "1") {
+      props.setRefresh(prev => !prev);
+      props.setOpen(false);
       successMsg(apiRes.setting.massage);
-      navigate("/jobs");
-    }else{
+    } else {
       errorMsg(apiRes.setting.message);
     }
   };
-  // console.log(props.jobFormData, props.mode);
+
   const onFinishFailed = () => { };
 
   return (

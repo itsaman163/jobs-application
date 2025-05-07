@@ -1,9 +1,11 @@
 import { lazy } from "react";
 const Login = lazy(() => import("../pages/Guest/Login"));
+const Registration = lazy(() => import("../pages/Guest/Registration"));
 const Dashboard = lazy(() => import("../pages/Dashboard/Dashboard"));
 const ErrorPage = lazy(() => import("../components/ErrorPage"));
 const Jobs = lazy(() => import("../pages/Jobs/Jobs"));
 const PageNotFound = lazy(() => import("../components/ErrorPage/PageNotFound"));
+const User = lazy(() => import("../pages/User/User"));
 
 const routesList = [
   {
@@ -13,8 +15,25 @@ const routesList = [
     allowWithoutLogin: true,
   },
   {
+    path: "/login",
+    index: true,
+    component: Login,
+    allowWithoutLogin: true,
+  },
+  {
+    path: "/registration",
+    index: true,
+    component: Registration,
+    allowWithoutLogin: true
+  },
+  {
     path: "*",
     component: ErrorPage,
+    allowWithoutLogin: false,
+  },
+  {
+    path: "*",
+    component: PageNotFound,
     allowWithoutLogin: false,
   },
   {
@@ -30,9 +49,9 @@ const routesList = [
     allowWithoutLogin: false,
   },
   {
-    path: "*",
-    component: PageNotFound,
-    allowWithoutLogin: true,
+    path: "/user",
+    component: User,
+    allowWithoutLogin: false
   }
 
 ];
