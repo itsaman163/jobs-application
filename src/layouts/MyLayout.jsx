@@ -10,8 +10,6 @@ import { Content, Header } from "antd/es/layout/layout";
 import LeftMenu from "./LeftMenu";
 const { Footer } = Layout;
 
-
-
 const MyLayout = () => {
   const sesstionData = getSession();
 
@@ -27,7 +25,6 @@ const MyLayout = () => {
 
   return (
     isVerifying ? <Loader /> :
-
       <Layout>
         <Sider
           breakpoint="lg"
