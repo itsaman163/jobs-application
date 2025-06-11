@@ -1,6 +1,6 @@
-import { Button, Modal, Popconfirm, Space, Typography } from "antd";
+import { Button, Modal, Popconfirm, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { apiRequest, apiRequestV1, errorMsg, successMsg } from "../../helper/general";
+import { apiRequestV1, errorMsg, successMsg } from "../../helper/general";
 import Loader from "../../components/Loader/Loader";
 import AddUpdateJob from "./AddUpdateJob";
 import TableData from "../../components/Tables/Table";
@@ -9,16 +9,16 @@ const Jobs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [jobFormData, setJobFormData] = useState({});
   const [mode, setMode] = useState("add");
   const [refresh, setRefresh] = useState(false);
+  const [singleJobData, setSingleJobData] = useState();
 
   const columns = [
     {
       title: 'Company',
       dataIndex: 'company',
       key: 'company',
-      render: (text) => <a>{text}</a>,
+      render: (text, record) => <a onClick={() => modelClickHandler('update', record)}>{text}</a>,
     },
     {
       title: 'Position',
@@ -62,21 +62,7 @@ const Jobs = () => {
       if (res.setting.success == "1") {
         setProjectData(res.data.jobs);
       }
-    } catch (error) { }
-  };
-  const getFormData = async (value) => {
-    setMode("update");
-    setIsLoading(true);
-    const apiParams = {
-      method: "POST",
-      apiParams: {},
-    };
-    const res = await apiRequest(`/jobs/${value}`, apiParams);
-    setIsLoading(false);
-    if (res.setting.success == "1") {
-      setJobFormData(res.data.job);
-    }
-    setOpen(true);
+    } catch (error) { console.log("error------------->>", error) }
   };
   const deleteJobHandler = async (data) => {
     try {
@@ -99,7 +85,12 @@ const Jobs = () => {
     getProjectList();
   }, [refresh]);
 
-  const modelClickHandler = () => {
+  const modelClickHandler = (mode, data) => {
+
+    if (mode === 'update') {
+      setSingleJobData(data);
+      setMode('update')
+    }
     setOpen(true);
   };
   return (
@@ -112,24 +103,22 @@ const Jobs = () => {
         All JOBS
       </Typography.Title>
       <TableData columns={columns} data={projectData} />
-      <div>
-        <Modal
-          title="Create Job"
-          centered
-          open={open}
-          footer={null}
-          onCancel={() => {
-            setOpen(false);
-          }}
-        >
-          <AddUpdateJob
-            setOpen={setOpen}
-            mode={mode}
-            jobFormData={jobFormData}
-            setRefresh={setRefresh}
-          />
-        </Modal>
-      </div>
+      <Modal
+        title={mode === 'update' ? "Update Job" : "Create Job"}
+        centered
+        open={open}
+        footer={null}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      >
+        <AddUpdateJob
+          setOpen={setOpen}
+          mode={mode}
+          singleJobData={singleJobData}
+          setRefresh={setRefresh}
+        />
+      </Modal>
     </>
   );
 };

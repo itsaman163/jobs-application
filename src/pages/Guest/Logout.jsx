@@ -8,23 +8,23 @@ const Logout = () => {
   const navigate = useNavigate();
   const [loadings, setLoadings] = useState([]);
   const { setIsLogin } = useContext(LoginContext);
-  const logoutHandler = (index) => {
+  const logoutHandler = () => {
     deleteSession();
     setIsLogin(null);
     navigate('/');
   };
 
-return (
-  <Space direction="vertical" className="logout-button">
-    <Button
-      type="primary"
-      icon={<PoweroffOutlined />}
-      loading={loadings[1]}
-      onClick={() => logoutHandler()}
-    >
-    </Button>
-  </Space>
-)
+  return (
+    <Space direction="vertical" className="logout-button">
+      <Button
+        type="primary"
+        icon={<PoweroffOutlined />}
+        loading={loadings[1]}
+        onClick={logoutHandler}
+      >
+      </Button>
+    </Space>
+  )
 }
 
 export default Logout;

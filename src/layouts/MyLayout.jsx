@@ -1,12 +1,12 @@
-import React, { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import routesList from "../routes";
-import { Layout, Menu, theme } from "antd";
+import { Layout, theme } from "antd";
 import { getSession } from "../helper/auth";
 import LayoutHeader from "./LayoutHeader";
 import Loader from "../components/Loader/Loader";
 import Sider from "antd/es/layout/Sider";
-import { Content, Header } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 import LeftMenu from "./LeftMenu";
 const { Footer } = Layout;
 
@@ -72,39 +72,6 @@ const MyLayout = () => {
           </Footer>
         </Layout>
       </Layout>
-
-
-
-
-
-    // <Layout style={{ minHeight: "100vh" }} className="layout">
-    //   <LayoutHeader />
-    //   <Suspense fallback={<Loader />}>
-    //     <Routes>
-    //       {routesList.map((row, index) => {
-    //         if (!row.allowWithoutLogin) {
-    //           return (
-    //             <Route
-    //               key={index}
-    //               exact
-    //               path={row.path}
-    //               item={row}
-    //               element={<row.component />}
-    //             />
-    //           );
-    //         }
-    //       })}
-    //     </Routes>
-    //   </Suspense>
-
-    //   <Footer
-    //     style={{
-    //       textAlign: "center",
-    //     }}
-    //   >
-    //     ©2023
-    //   </Footer>
-    // </Layout>
   );
 };
 export default MyLayout;
