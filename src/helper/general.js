@@ -90,10 +90,11 @@ export const apiRequest = async (apiUrl, apiSetting = {}) => {
 
 export const apiRequestV1 = async (apiUrl, apiParams) => {
   try {
-    const targetUrl = API_END_POINT + apiUrl;
+    let targetUrl = API_END_POINT + apiUrl;
     const method = apiParams.method;
     const data = apiParams.apiParams;
-
+    const params = apiParams.params;
+    if (params) targetUrl = `${targetUrl}/${params}`
     const loginInfo = getSession();
     const authToken = loginInfo ? loginInfo : null;
 

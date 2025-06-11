@@ -4,7 +4,6 @@ import { Button, Card, Form, Input, Typography } from "antd";
 import { errorMsg, successMsg } from "../../helper/general";
 import { setSession } from "../../helper/auth";
 import Loader from "../../components/Loader/Loader";
-import "./Login.css";
 import { LoginContext } from "../../App";
 import axios from "axios";
 import { API_END_POINT } from "../../config";
@@ -17,8 +16,6 @@ const Login = () => {
   const { setIsLogin } = useContext(LoginContext);
 
   const navigate = useNavigate();
-
-  const rememberMeChangeHandler = ({ target: { checked } }) => setRememberMe(checked);
 
   const onFinish = async (formData) => {
     setIsLoading(true);
