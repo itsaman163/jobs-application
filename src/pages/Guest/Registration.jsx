@@ -14,7 +14,6 @@ const RegisterForm = () => {
     try {
       const formData = new FormData();
       for (const [key, val] of Object.entries(value)) {
-        console.log(val)
         formData.append(key, val);
       }
       const config = {
@@ -38,7 +37,7 @@ const RegisterForm = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.log(error)
+      console.log("----------->>", error)
       errorMsg(error.response.data.msg);
     }
 

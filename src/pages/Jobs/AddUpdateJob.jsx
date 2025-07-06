@@ -19,6 +19,7 @@ const AddUpdateJob = ({ setOpen, mode, singleJobData, setRefresh }) => {
       apiParams.params = singleJobData._id
     }
     const apiRes = await apiRequestV1('/jobs', apiParams);
+    formReset();
     if (apiRes?.setting?.success == "1") {
       setRefresh(prev => !prev);
       setOpen(false);
@@ -35,9 +36,12 @@ const AddUpdateJob = ({ setOpen, mode, singleJobData, setRefresh }) => {
     });
 
   }
+  const formReset = () => {
+    form.resetFields()
+  }
   useEffect(() => {
     if (mode === 'update') {
-      getJobData()
+      getJobData();
     }
   }, [singleJobData])
   return (
@@ -46,6 +50,7 @@ const AddUpdateJob = ({ setOpen, mode, singleJobData, setRefresh }) => {
       layout="vertical"
       onFinish={onFinish}
       name="form_in_modal"
+      oncancel={formReset}
       initialValues={{
         modifier: "public",
       }}

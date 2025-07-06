@@ -1,4 +1,4 @@
-import { useState, createContext, useEffect, lazy, Suspense } from "react";
+import { useState, createContext, lazy, Suspense } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';

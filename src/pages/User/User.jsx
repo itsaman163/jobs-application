@@ -26,7 +26,6 @@ const User = () => {
     ];
     const getUserList = async () => {
         try {
-            console.log("fdf");
             const apiParams = {
                 method: "GET",
                 apiParams: {}
@@ -37,7 +36,7 @@ const User = () => {
                 setUserList(apiRes.data)
             }
         } catch (error) {
-            console.log(error)
+            console.log("------------>>", error)
         }
     }
     useEffect(() => {
