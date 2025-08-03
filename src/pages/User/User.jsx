@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiRequestV1 } from "../../helper/general";
+import { apiRequestV1, errorMsg } from "../../helper/general";
 import Loader from "../../components/Loader/Loader";
 import { Button, Typography } from "antd";
 import TableData from "../../components/Tables/Table";
@@ -34,6 +34,8 @@ const User = () => {
             setIsLoading(false);
             if (apiRes.setting.success) {
                 setUserList(apiRes.data)
+            } else {
+                errorMsg(apiRes);
             }
         } catch (error) {
             console.log("------------>>", error)
