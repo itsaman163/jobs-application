@@ -83,7 +83,7 @@ export const apiRequest = async (apiUrl, apiSetting = {}) => {
       return api_response["data"];
     }
   } catch (error) {
-    console.log(error);
+    console.log("--------->>", error);
     // return error?.response;
   }
 }
@@ -114,7 +114,7 @@ export const apiRequestV1 = async (apiUrl, apiParams) => {
     const result = await axios.request(config);
     return result.data
   } catch (err) {
-    console.log(err);
+    console.log("----------->>", err);
     return { setting: { success: false, massage: err.response.data.msg } }
   }
 }

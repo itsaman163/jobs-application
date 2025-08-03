@@ -1,6 +1,6 @@
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MenuArr = [
@@ -27,7 +27,7 @@ const MenuArr = [
 
 const LeftMenu = () => {
     const navigate = useNavigate();
-    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState(['1']);
+    const [defaultSelectedKeys, setDefaultSelectedKeys] = useState([0]);
     const onClick = (e) => {
         const selectedItem = MenuArr.find(item => item.key == e.key);
         if (selectedItem?.path) {
@@ -38,4 +38,4 @@ const LeftMenu = () => {
         <Menu onClick={onClick} theme="dark" mode="inline" defaultSelectedKeys={defaultSelectedKeys} items={MenuArr} />
     )
 }
-export default LeftMenu; 
+export default memo(LeftMenu); 
