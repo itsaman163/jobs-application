@@ -1,6 +1,6 @@
 import { memo, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Space } from "antd";
+import { Button, Popconfirm, Space } from "antd";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { deleteSession } from "../../helper/auth";
 import { LoginContext } from "../../App";
@@ -15,12 +15,21 @@ const Logout = () => {
 
   return (
     <Space direction="vertical" className="logout-button">
-      <Button
-        type="primary"
-        icon={<PoweroffOutlined />}
-        onClick={logoutHandler}
+
+      <Popconfirm
+        title="Logout"
+        description="Are you sure to Logout?"
+        onConfirm={logoutHandler}
+        okText="Yes"
+        cancelText="No"
       >
-      </Button>
+        <Button
+          type="primary"
+          icon={<PoweroffOutlined />}
+        >
+        </Button>
+      </Popconfirm>
+
     </Space>
   )
 }
