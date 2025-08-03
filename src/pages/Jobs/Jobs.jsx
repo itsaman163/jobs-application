@@ -1,10 +1,11 @@
 import { Button, Modal, Popconfirm, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { apiRequestV1, errorMsg, successMsg } from "../../helper/general";
 import Loader from "../../components/Loader/Loader";
 import AddUpdateJob from "./AddUpdateJob";
 import TableData from "../../components/Tables/Table";
 
+export const JobContext = createContext();
 const Jobs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [projectData, setProjectData] = useState([]);
@@ -26,6 +27,32 @@ const Jobs = () => {
       key: 'position',
     },
     {
+      title: 'Contect No.',
+      dataIndex: 'number',
+      key: 'number',
+    },
+    {
+      title: 'CTC',
+      dataIndex: 'ctc',
+      key: 'ctc',
+    },
+    {
+      title: 'ECTC',
+      dataIndex: 'ectc',
+      key: 'ectc',
+    },
+    {
+      title: 'Link',
+      dataIndex: 'link',
+      key: 'link',
+    },
+
+    {
+      title: 'NP',
+      dataIndex: 'noticePeriod',
+      key: 'noticePeriod',
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
@@ -33,7 +60,14 @@ const Jobs = () => {
     {
       title: 'Created By',
       key: 'createdBy',
-      dataIndex: 'createdBy'
+      render: (ele, record) => (
+        record.userInfo[0].name
+      )
+    },
+    {
+      title: 'Added Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
     },
     {
       title: 'Action',
@@ -89,36 +123,43 @@ const Jobs = () => {
 
     if (mode === 'update') {
       setSingleJobData(data);
-      setMode('update')
     }
+    setMode(mode)
     setOpen(true);
   };
+  const contextData = {
+    modelClickHandler
+  }
   return (
     <>
-      {isLoading && <Loader />}
-      <Button type="primary" onClick={modelClickHandler} className="add-button">
-        Add New Job
-      </Button>
-      <Typography.Title level={3} className="table-heading">
-        All JOBS
-      </Typography.Title>
-      <TableData columns={columns} data={projectData} />
-      <Modal
-        title={mode === 'update' ? "Update Job" : "Create Job"}
-        centered
-        open={open}
-        footer={null}
-        onCancel={() => {
-          setOpen(false);
-        }}
-      >
-        <AddUpdateJob
-          setOpen={setOpen}
-          mode={mode}
-          singleJobData={singleJobData}
-          setRefresh={setRefresh}
-        />
-      </Modal>
+      <JobContext.Provider value={contextData}>
+        {isLoading && <Loader />}
+        <Button type="primary" onClick={() => modelClickHandler('add')} className="add-button">
+          Add New Job
+        </Button>
+        <Typography.Title level={3} className="table-heading">
+          All JOBS
+        </Typography.Title>
+        <TableData columns={columns} data={projectData} />
+        <Modal
+          title={mode === 'update' ? "Update Job" : "Create Job"}
+          centered
+          open={open}
+          footer={null}
+          onCancel={() => {
+            setOpen(false);
+          }}
+          width={"50%"}
+        >
+          <AddUpdateJob
+            setOpen={setOpen}
+            open={open}
+            mode={mode}
+            singleJobData={singleJobData}
+            setRefresh={setRefresh}
+          />
+        </Modal>
+      </JobContext.Provider>
     </>
   );
 };
