@@ -27,7 +27,7 @@ const Login = () => {
       successMsg(apiRes.setting.message);
       setSession(resData);
       setIsLogin(true);
-      navigate("/jobs");
+      navigate("/");
     } else {
       errorMsg(apiRes);
     }
