@@ -61,7 +61,7 @@ const Jobs = () => {
       title: 'Created By',
       key: 'createdBy',
       render: (ele, record) => (
-        record.userInfo[0].name
+        record.userInfo[0]?.name || '--'
       )
     },
     {
