@@ -1,219 +1,208 @@
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Row, Col, Space } from "antd";
+import {
+  BankOutlined,
+  IdcardOutlined,
+  DollarOutlined,
+  PhoneOutlined,
+  LinkOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
 import { apiRequestV1, errorMsg, successMsg } from "../../helper/general";
-import { useContext, useEffect } from "react";
-import { JobContext } from "./Jobs";
+import { useEffect, useState } from "react";
 
-const AddUpdateJob = ({ setOpen, open, mode, singleJobData, setRefresh }) => {
+const AddUpdateJob = ({ setOpen, mode, singleJobData, setRefresh }) => {
   const [form] = Form.useForm();
-  const { modelClickHandler } = useContext(JobContext);
+  const [submitting, setSubmitting] = useState(false);
 
   const onFinish = async (value) => {
-    const apiParams = {
-      method: "POST",
-      apiParams: {
-        company: value.company_name,
-        position: value.position,
-        status: value.status,
-        ctc: value.ctc,
-        ectc: value.ectc,
-        link: value.link,
-        number: value.mobile_phone,
-        noticePeriod: value.noticePeriod,
-      },
-    };
-    if (mode === 'update') {
-      apiParams.method = 'PATCH'
-      apiParams.params = singleJobData._id
-    }
-    const apiRes = await apiRequestV1('/jobs', apiParams);
-    formReset();
-    if (apiRes?.setting?.success == "1") {
-      setRefresh(prev => !prev);
-      setOpen(false);
-      successMsg(apiRes.setting.massage);
-    } else {
-      errorMsg(apiRes.setting.message);
+    try {
+      setSubmitting(true);
+      const apiParams = {
+        method: "POST",
+        apiParams: {
+          company: value.company_name,
+          position: value.position,
+          status: value.status || "pending",
+          ctc: value.ctc,
+          ectc: value.ectc,
+          link: value.link,
+          number: value.mobile_phone,
+          noticePeriod: value.noticePeriod,
+        },
+      };
+
+      if (mode === "update") {
+        apiParams.method = "PATCH";
+        apiParams.params = singleJobData._id;
+      }
+
+      const apiRes = await apiRequestV1("/jobs", apiParams);
+
+      if (apiRes?.setting?.success === "1" || apiRes?.setting?.success === true) {
+        setRefresh((prev) => !prev);
+        setOpen(false);
+        successMsg(apiRes.setting.massage || apiRes.setting.message || "Application saved successfully!");
+      } else {
+        errorMsg(apiRes?.setting?.message || apiRes?.setting?.massage || "Action failed");
+      }
+    } catch (err) {
+      console.error("Save job error:", err);
+      errorMsg("Failed to save job application");
+    } finally {
+      setSubmitting(false);
     }
   };
-  const getJobData = async () => {
-    form.setFieldsValue({
-      company_name: singleJobData.company,
-      position: singleJobData.position,
-      status: singleJobData.status,
-      ctc: singleJobData.ctc,
-      ectc: singleJobData.ectc,
-      link: singleJobData.link,
-      mobile_phone: singleJobData.number,
-      noticePeriod: singleJobData.noticePeriod,
-    });
-
-  }
-  const formReset = () => {
-    form.resetFields()
-  }
-  const cancelHandler = () => {
-    modelClickHandler('add')
-    setOpen(false);
-  }
 
   useEffect(() => {
-    if (mode === 'update') {
-      getJobData();
+    if (mode === "update" && singleJobData) {
+      form.setFieldsValue({
+        company_name: singleJobData.company,
+        position: singleJobData.position,
+        status: singleJobData.status || "pending",
+        ctc: singleJobData.ctc,
+        ectc: singleJobData.ectc,
+        link: singleJobData.link,
+        mobile_phone: singleJobData.number,
+        noticePeriod: singleJobData.noticePeriod,
+      });
+    } else {
+      form.resetFields();
     }
-  }, [singleJobData])
+  }, [mode, singleJobData, form]);
 
   return (
-    <div className="modal-form-wrapper">
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        name="form_in_modal"
-        onCancel={formReset}
-        initialValues={{
-          modifier: "public",
-        }}
-        className="modal-form"
-      >
-        <div className="form-body-scrollable">
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={onFinish}
+      name="job_form"
+      style={{ marginTop: 16 }}
+      requiredMark={false}
+      initialValues={{ status: "pending" }}
+    >
+      <div className="modal-section-title">Company & Position Details</div>
+      <Row gutter={16}>
+        <Col span={12}>
           <Form.Item
             name="company_name"
             label="Company Name"
-            style={{ display: 'inline-block', width: '97%' }}
+            rules={[{ required: true, message: "Please enter the company name" }]}
+          >
+            <Input
+              prefix={<BankOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="e.g. Google, Stripe"
+            />
+          </Form.Item>
+        </Col>
+
+        <Col span={12}>
+          <Form.Item
+            name="position"
+            label="Job Position / Role"
+            rules={[{ required: true, message: "Please enter the position" }]}
+          >
+            <Input
+              prefix={<IdcardOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="e.g. Senior Frontend Engineer"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <div className="modal-section-title">Compensation & Notice</div>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item name="ctc" label="Current CTC (LPA)">
+            <Input
+              prefix={<DollarOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="e.g. 15"
+            />
+          </Form.Item>
+        </Col>
+
+        <Col span={12}>
+          <Form.Item name="ectc" label="Expected CTC (LPA)">
+            <Input
+              prefix={<DollarOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="e.g. 24"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="noticePeriod"
+            label="Notice Period (Days)"
             rules={[
               {
-                required: true,
-                message: "Please enter the Company Name of Job!",
+                pattern: /^[0-9]+$/,
+                message: "Please enter valid number of days",
               },
             ]}
           >
-            <Input placeholder="company name here" />
+            <Input
+              prefix={<CalendarOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="e.g. 30"
+              maxLength={3}
+            />
           </Form.Item>
-          <Form.Item
-            name="position"
-            label="Position"
-            style={{ display: 'inline-block', width: '97%' }}
-          >
-            <Input placeholder="position here" />
-          </Form.Item>
-          <Form.Item >
-            <Form.Item
-              name={"link"}
-              label="Link"
-              style={{ display: 'inline-block', width: "49%" }}
-            >
-              <Input placeholder="link here" />
-            </Form.Item>
-            <Form.Item
-              name={"noticePeriod"}
-              label="Notice Period"
-              style={{ display: 'inline-block', width: '47%', margin: '0 8px' }}
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your Notice!",
-                },
-                {
-                  validator: (_, value) => {
-                    const regex = /^[0-9][0-9]$/;
-                    if (!value || regex.test(value)) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Please enter a valid 02-digit notice period!'));
-                  },
-                },
+        </Col>
+
+        <Col span={12}>
+          <Form.Item name="status" label="Application Status">
+            <Select
+              options={[
+                { value: "pending", label: "Pending / Applied" },
+                { value: "interview", label: "Interviewing" },
+                { value: "offer", label: "Offer Received" },
+                { value: "declined", label: "Declined / Rejected" },
               ]}
-            >
-              <Input
-                maxLength={2}
-                placeholder="mobile number here"
-                onKeyUp={(e) => {
-                  if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault(); // Block non-numeric input
-                  }
-                }}
-                type="text" />
-            </Form.Item>
+            />
           </Form.Item>
-          <Form.Item>
-            <Form.Item
-              name={"ctc"}
-              label="CTC"
-              style={{ display: 'inline-block', width: '49%' }}
-            >
-              <Input placeholder="current ctc here" />
-            </Form.Item>
-            <Form.Item
-              name={"ectc"}
-              label="ECTC"
-              style={{ display: 'inline-block', width: '47%', margin: '0 8px' }}
-            >
-              <Input placeholder="expected current ctc here" />
-            </Form.Item>
+        </Col>
+      </Row>
+
+      <div className="modal-section-title">Contact & External Reference</div>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item name="mobile_phone" label="Recruiter Phone / Contact">
+            <Input
+              prefix={<PhoneOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="e.g. 9876543210"
+              maxLength={15}
+            />
           </Form.Item>
-          <Form.Item>
-            <Form.Item
-              name={"mobile_phone"}
-              label="Mobile Number"
-              style={{ display: 'inline-block', width: '49%' }}
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your phone number!",
-                },
-                {
-                  validator: (_, value) => {
-                    const regex = /^[1-9][0-9]{9}$/; // 10 digit number, not starting with 0
-                    if (!value || regex.test(value)) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Please enter a valid 10-digit mobile number!'));
-                  },
-                },
-              ]}
-            >
-              <Input maxLength={10}
-                placeholder="mobile number here"
-                onKeyUp={(e) => {
-                  if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault(); // Block non-numeric input
-                  }
-                }}
-                type="text" />
-            </Form.Item>
-            <Form.Item
-              name="status"
-              label="Status"
-              style={{ display: 'inline-block', width: '47%', margin: '0 8px' }}
-            >
-              <Select placeholder={"job status"}>
-                <Select.Option value="pending">Pending</Select.Option>
-                <Select.Option value="interview">Interview</Select.Option>
-                <Select.Option value="declined">Declined</Select.Option>
-              </Select>
-            </Form.Item>
+        </Col>
+
+        <Col span={12}>
+          <Form.Item name="link" label="Job Posting URL">
+            <Input
+              prefix={<LinkOutlined style={{ color: "#94a3b8" }} />}
+              placeholder="https://linkedin.com/jobs/..."
+            />
           </Form.Item>
-        </div>
-        <Form.Item
-          className="form-footer-fixed"
-        >
-          <div className="form-button">
-            <div>
-              <Button
-                onClick={() => cancelHandler()}
-              >
-                cancel
-              </Button>
-            </div>
-            <div>
-              <Button type="primary" htmlType="submit">
-                {mode === 'add' ? 'Add' : "Upadte"}
-              </Button>
-            </div>
-          </div>
-        </Form.Item>
-      </Form>
-    </div>
+        </Col>
+      </Row>
+
+      {/* Action Footer */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 12,
+          marginTop: 24,
+          paddingTop: 16,
+          borderTop: "1px solid #f1f5f9",
+        }}
+      >
+        <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <Button type="primary" htmlType="submit" loading={submitting}>
+          {mode === "add" ? "Create Application" : "Save Changes"}
+        </Button>
+      </div>
+    </Form>
   );
 };
 
