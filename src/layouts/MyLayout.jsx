@@ -1,79 +1,63 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import routesList from "../routes";
-import { Layout, theme } from "antd";
-import { getSession } from "../helper/auth";
+import { Layout } from "antd";
+import { RocketOutlined } from "@ant-design/icons";
 import LayoutHeader from "./LayoutHeader";
-import Loader from "../components/Loader/Loader";
-import Sider from "antd/es/layout/Sider";
-import { Content } from "antd/es/layout/layout";
 import LeftMenu from "./LeftMenu";
-const { Footer } = Layout;
+import Loader from "../components/Loader/Loader";
+
+const { Sider, Content, Footer } = Layout;
 
 const MyLayout = () => {
-  const sesstionData = getSession();
-  const [isVerifying, setIsVerifying] = useState(true);
-
-  const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-
-  useEffect(() => {
-    setIsVerifying(false);
-  }, [sesstionData?.token]);
-
+  const [collapsed, setCollapsed] = useState(false);
 
   const protectedRoutes = useMemo(() => {
     return routesList
-      .filter(row => !row.allowWithoutLogin)
+      .filter((row) => !row.allowWithoutLogin)
       .map((row, index) => (
         <Route
-          key={index}
+          key={`protected-${row.path}-${index}`}
           exact
           path={row.path}
-          item={row}
           element={<row.component />}
         />
       ));
-  }, [routesList]);
-
-  const handleBreakpoint = useCallback((broken) => {
-  }, [sesstionData]);
+  }, []);
 
   return (
-    isVerifying ? <Loader /> :
-      <Layout>
-        <Sider
-          breakpoint="lg"
-          collapsedWidth="0"
-          onBreakpoint={handleBreakpoint}
-          onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
-          }}
-        >
-          <div className="demo-logo-vertical" />
-          <LeftMenu />
-        </Sider>
-        <Layout>
-          <LayoutHeader />
-          <Content style={{ margin: '24px 16px 0' }}>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
-              <Routes>
-                {protectedRoutes}
-              </Routes>
-            </div>
-          </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Jobs API ©{new Date().getFullYear()} Created by Aman Kumar
-          </Footer>
-        </Layout>
+    <Layout className="app-layout">
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="80"
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        width={250}
+        className="app-sidebar"
+      >
+        <div className="sidebar-brand">
+          <div className="sidebar-logo-icon">
+            <RocketOutlined />
+          </div>
+          {!collapsed && <span className="sidebar-brand-text">CareerHub</span>}
+        </div>
+        <LeftMenu />
+      </Sider>
+
+      <Layout style={{ minHeight: "100vh", background: "var(--color-bg-base)" }}>
+        <LayoutHeader />
+        <Content className="content-container">
+          <Suspense fallback={<Loader />}>
+            <Routes>{protectedRoutes}</Routes>
+          </Suspense>
+        </Content>
+        <Footer style={{ textAlign: "center", color: "#94a3b8", fontSize: 13, background: "transparent" }}>
+          CareerHub © {new Date().getFullYear()} • Enterprise Application Tracker
+        </Footer>
       </Layout>
+    </Layout>
   );
 };
-export default MyLayout;
 
+export default MyLayout;
